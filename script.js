@@ -67,7 +67,7 @@ function startQuiz() {
             nameInput.style.borderColor = '';
             nameInput.style.animation = '';
         }, 500);
-        alert('দয়া করে তোমার নাম লেখো!');
+        alert('দয়া করে আপনার নাম লিখুন!');
         return;
     }
     
@@ -345,7 +345,7 @@ function showResults() {
         return bengaliNumbers[parseInt(d)];
     }).join('');
     
-    document.getElementById('score-details').textContent = `তুমি ${bengaliTotal}টি প্রশ্নের মধ্যে ${bengaliScore}টি সঠিক উত্তর দিয়েছো`;
+    document.getElementById('score-details').textContent = `আপনি ${bengaliTotal}টি প্রশ্নের মধ্যে ${bengaliScore}টি সঠিক উত্তর দিয়েছেন`;
     
     // পারফরম্যান্স ব্যাজ
     const badge = document.getElementById('performance-badge');
@@ -359,7 +359,7 @@ function showResults() {
         badge.textContent = '👌 মন্দ নয়!';
         badge.className = 'performance-badge badge-average';
     } else {
-        badge.textContent = '💪 আরো চেষ্টা করো!';
+        badge.textContent = '💪 আরো চেষ্টা করুন!';
         badge.className = 'performance-badge badge-poor';
     }
     
@@ -469,7 +469,7 @@ function restartQuiz() {
 
 // কুইজ বন্ধ করা
 function quitQuiz() {
-    if (confirm('তুমি কি সত্যিই কুইজ বন্ধ করতে চাও?')) {
+    if (confirm('আপনি কি সত্যিই কুইজ বন্ধ করতে চান?')) {
         restartQuiz();
     }
 }
