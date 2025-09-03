@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="bn">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>বাংলা কুইজ অ্যাপ - পশ্চিমবঙ্গ সরকারি স্কুল</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+    <div class="floating-shapes">
+        <div class="shape shape-1"></div>
+        <div class="shape shape-2"></div>
+        <div class="shape shape-3"></div>
+        <div class="shape shape-4"></div>
+        <div class="shape shape-5"></div>
+    </div>
+    <div class="particles" id="particles"></div>
+    <div class="app-container">
+        <header class="app-header">
+            <div class="header-content">
+                <div class="logo-section">
+                    <div class="logo-icon">🎓</div>
+                    <div class="logo-text">
+                        <h1>বাংলা কুইজ অ্যাপ</h1>
+                        <p>জ্ঞানের আলোয় এগিয়ে চলো</p>
+                    </div>
+                </div>
+                <div class="header-right">
+                    <div class="creator-badge">
+                        <div class="creator-icon">👨‍🏫</div>
+                        <div class="creator-info">
+                            <span class="creator-label">Created by</span>
+                            <span class="creator-name">Azharuddin Sir</span>
+                        </div>
+                    </div>
+                    <div class="header-stats">
+                        <div class="stat-item">
+                            <span class="stat-number">৩০০+</span>
+                            <span class="stat-label">প্রশ্ন</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-number">৬</span>
+                            <span class="stat-label">বিষয়</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-number">৪</span>
+                            <span class="stat-label">শ্রেণী</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <!-- Start Screen -->
+            <div id="start-screen" class="screen">
+                <div class="welcome-section">
+                    <h2>স্বাগতম!</h2>
+                    <p>তোমার জ্ঞান পরীক্ষা করো বিভিন্ন বিষয়ের প্রশ্নের মাধ্যমে</p>
+                </div>
+
+                <div class="setup-form">
+                    <div class="form-group animated-input">
+                        <label for="student-name">তোমার নাম:</label>
+                        <input type="text" id="student-name" placeholder="নাম লেখো" class="form-input">
+                        <div class="input-glow"></div>
+                    </div>
+
+                    <div class="form-group animated-input">
+                        <label for="question-count">প্রশ্নের সংখ্যা:</label>
+                        <select id="question-count" class="form-select">
+                            <option value="5">৫টি প্রশ্ন</option>
+                            <option value="10" selected>১০টি প্রশ্ন</option>
+                            <option value="15">১৫টি প্রশ্ন</option>
+                            <option value="20">২০টি প্রশ্ন</option>
+                        </select>
+                        <div class="input-glow"></div>
+                    </div>
+
+                    <button onclick="startQuiz()" class="btn btn-primary pulse-btn">
+                        <span class="btn-text">কুইজ শুরু করো</span>
+                        <div class="btn-ripple"></div>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Quiz Screen -->
+            <div id="quiz-screen" class="screen" style="display: none;">
+                <div class="quiz-header">
+                    <div class="progress-section">
+                        <div class="progress-bar">
+                            <div id="progress-fill" class="progress-fill"></div>
+                        </div>
+                        <span id="question-counter" class="question-counter">১ / ১০</span>
+                    </div>
+
+                </div>
+
+                <div class="timer-section">
+                    <div id="timer-container" class="timer-container">
+                        <div id="timer-bar" class="timer-bar"></div>
+                        <span id="timer-text" class="timer-text">৩০</span>
+                    </div>
+                </div>
+
+                <div class="question-section">
+                    <h2 id="question" class="question-text"></h2>
+                    <div id="options" class="options-grid"></div>
+                </div>
+
+                <div class="quiz-actions">
+                    <button onclick="skipQuestion()" class="btn btn-secondary hover-lift">
+                        <span>এড়িয়ে যাও</span>
+                    </button>
+                    <button onclick="quitQuiz()" class="btn btn-danger hover-lift">
+                        <span>বন্ধ করো</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Result Screen -->
+            <div id="result-screen" class="screen" style="display: none;">
+                <div class="results-section">
+                    <h2 class="results-title">🎉 কুইজ সম্পন্ন!</h2>
+
+                    <div class="score-display">
+                        <div id="score-circle" class="score-circle">
+                            <span id="score-percentage">০%</span>
+                        </div>
+                        <p id="student-info" class="student-info"></p>
+                        <p id="score-details" class="score-details"></p>
+                    </div>
+
+                    <div id="performance-badge" class="performance-badge"></div>
+
+                    <div id="subject-breakdown" class="subject-breakdown"></div>
+
+                    <div class="result-actions">
+                        <button onclick="restartQuiz()" class="btn btn-primary hover-lift pulse-btn">
+                            <span>আবার খেলো</span>
+                        </button>
+                        <button onclick="showAnswers()" class="btn btn-secondary hover-lift">
+                            <span>উত্তর দেখো</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Answer Review Screen -->
+            <div id="answer-screen" class="screen" style="display: none;">
+                <div class="answer-review">
+                    <h2>প্রশ্ন ও উত্তর পর্যালোচনা</h2>
+                    <div id="answer-list" class="answer-list"></div>
+                    <button onclick="backToResults()" class="btn btn-primary">ফলাফলে ফিরে যাও</button>
+                </div>
+            </div>
+        </main>
+
+        <footer class="app-footer">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>📚 শিক্ষামূলক</h3>
+                    <p>পশ্চিমবঙ্গ সরকারি স্কুলের পাঠ্যক্রম অনুযায়ী প্রস্তুতকৃত</p>
+                </div>
+                <div class="footer-section">
+                    <h3>🎯 বিষয়সমূহ</h3>
+                    <p>ইতিহাস • ভূগোল • ভৌতবিজ্ঞান • জীবনবিজ্ঞান • ইংরেজি • বাংলা</p>
+                </div>
+                <div class="footer-section">
+                    <h3>🏆 লক্ষ্য</h3>
+                    <p>শিক্ষার্থীদের জ্ঞান বৃদ্ধি ও মূল্যায়ন</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <div class="footer-creator">
+                    <span class="creator-heart">❤️</span>
+                    <span>Crafted with passion by</span>
+                    <span class="footer-creator-name">Azharuddin Sir</span>
+                </div>
+                <p>&copy; ২০২৫ বাংলা কুইজ অ্যাপ। সর্বস্বত্ব সংরক্ষিত।</p>
+            </div>
+        </footer>
+    </div>
+
+    <script src="questions.js"></script>
+    <script src="script.js"></script>
+</body>
+
+</html>
