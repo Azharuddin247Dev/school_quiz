@@ -365,6 +365,9 @@ function showResults() {
     
     // বিষয়ভিত্তিক ফলাফল
     showSubjectBreakdown();
+    
+    // Track player
+    trackPlayer();
 }
 
 // বিষয়ভিত্তিক ফলাফল দেখানো
@@ -470,6 +473,235 @@ function quitQuiz() {
         restartQuiz();
     }
 }
+
+// Track who played
+function trackPlayer() {
+    const players = JSON.parse(localStorage.getItem('allPlayers') || '[]');
+    players.push({
+        name: studentName,
+        score: score,
+        total: totalQuestions,
+        percentage: Math.round((score / totalQuestions) * 100),
+        date: new Date().toLocaleDateString(),
+        time: new Date().toLocaleTimeString()
+    });
+    localStorage.setItem('allPlayers', JSON.stringify(players));
+}
+
+// Show all players (double-click footer)
+function showAllPlayers() {
+    const players = JSON.parse(localStorage.getItem('allPlayers') || '[]');
+    if (players.length === 0) {
+        showDynamicPopup('কেউ এখনো খেলেনি!', []);
+        return;
+    }
+    
+    showDynamicPopup('খেলোয়াড়দের তালিকা', players);
+}
+
+// Dynamic popup function
+function showDynamicPopup(title, players) {
+    // Remove existing popup
+    const existingPopup = document.getElementById('dynamic-popup');
+    if (existingPopup) existingPopup.remove();
+    
+    // Create popup
+    const popup = document.createElement('div');
+    popup.id = 'dynamic-popup';
+    popup.innerHTML = `
+        <div class="popup-overlay">
+            <div class="popup-content">
+                <div class="popup-header">
+                    <h3>${title}</h3>
+                    <button class="popup-close" onclick="closeDynamicPopup()">×</button>
+                </div>
+                <div class="popup-body">
+                    ${players.length === 0 ? '<p class="no-players">কেউ এখনো খেলেনি!</p>' : 
+                      players.map((p, i) => `
+                        <div class="player-item ${i === 0 ? 'top-player' : ''}">
+                            <div class="player-rank">${i + 1}</div>
+                            <div class="player-info">
+                                <div class="player-name">${p.name}</div>
+                                <div class="player-details">${p.date} ${p.time}</div>
+                            </div>
+                            <div class="player-score">${p.percentage}%</div>
+                        </div>
+                      `).join('')}
+                </div>
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(popup);
+    
+    // Add animation
+    setTimeout(() => popup.classList.add('show'), 10);
+}
+
+// Close popup
+function closeDynamicPopup() {
+    const popup = document.getElementById('dynamic-popup');
+    if (popup) {
+        popup.classList.remove('show');
+        setTimeout(() => popup.remove(), 300);
+    }
+}
+
+// English Puzzle Game
+const englishWords = [
+    {word: 'COMPUTER', clue: 'Electronic device for processing data', blank: 'C_MP_T_R'},
+    {word: 'ELEPHANT', clue: 'Large mammal with trunk', blank: '_L_PH_NT'},
+    {word: 'RAINBOW', clue: 'Colorful arc in sky after rain', blank: 'R_INB_W'},
+    {word: 'BICYCLE', clue: 'Two-wheeled vehicle', blank: 'B_CY_LE'},
+    {word: 'KITCHEN', clue: 'Room for cooking', blank: 'K_TCH_N'}
+];
+
+let currentEnglishWord = null;
+
+function startEnglishPuzzle() {
+    hideAllScreens();
+    document.getElementById('english-screen').style.display = 'block';
+    nextEnglishWord();
+}
+
+function nextEnglishWord() {
+    currentEnglishWord = englishWords[Math.floor(Math.random() * englishWords.length)];
+    document.getElementById('english-clue').textContent = currentEnglishWord.clue;
+    document.getElementById('english-word').textContent = currentEnglishWord.blank;
+    document.getElementById('english-answer').value = '';
+    document.getElementById('english-result').textContent = '';
+    document.getElementById('english-result').className = 'result-message';
+}
+
+function checkEnglishAnswer() {
+    const answer = document.getElementById('english-answer').value.trim().toUpperCase();
+    const resultDiv = document.getElementById('english-result');
+    
+    if (answer === currentEnglishWord.word) {
+        resultDiv.textContent = '🎉 Correct! Well done!';
+        resultDiv.className = 'result-message result-correct';
+    } else {
+        resultDiv.textContent = `❌ Wrong! The correct answer is: ${currentEnglishWord.word}`;
+        resultDiv.className = 'result-message result-incorrect';
+    }
+}
+
+function exitEnglishPuzzle() {
+    hideAllScreens();
+    document.getElementById('welcome-screen').style.display = 'block';
+}
+
+// Maths Puzzle Game
+let currentMathsProblem = null;
+
+function startMathsPuzzle() {
+    hideAllScreens();
+    document.getElementById('maths-screen').style.display = 'block';
+    nextMathsProblem();
+}
+
+function nextMathsProblem() {
+    const num1 = Math.floor(Math.random() * 16) + 5; // 5-20
+    const num2 = Math.floor(Math.random() * 16) + 5; // 5-20
+    currentMathsProblem = {num1, num2, answer: num1 * num2};
+    
+    document.getElementById('maths-problem').textContent = `${num1} × ${num2} = ?`;
+    document.getElementById('maths-answer').value = '';
+    document.getElementById('maths-result').textContent = '';
+    document.getElementById('maths-result').className = 'result-message';
+}
+
+function checkMathsAnswer() {
+    const answer = parseInt(document.getElementById('maths-answer').value);
+    const resultDiv = document.getElementById('maths-result');
+    
+    if (answer === currentMathsProblem.answer) {
+        resultDiv.textContent = '🎉 Correct! Great job!';
+        resultDiv.className = 'result-message result-correct';
+    } else {
+        resultDiv.textContent = `❌ Wrong! The correct answer is: ${currentMathsProblem.answer}`;
+        resultDiv.className = 'result-message result-incorrect';
+    }
+}
+
+function exitMathsPuzzle() {
+    hideAllScreens();
+    document.getElementById('welcome-screen').style.display = 'block';
+}
+
+// Chemistry Quiz Game
+const elements = [
+    {name: 'Oxygen', symbol: 'O'},
+    {name: 'Carbon', symbol: 'C'},
+    {name: 'Hydrogen', symbol: 'H'},
+    {name: 'Nitrogen', symbol: 'N'},
+    {name: 'Iron', symbol: 'Fe'},
+    {name: 'Gold', symbol: 'Au'},
+    {name: 'Silver', symbol: 'Ag'},
+    {name: 'Sodium', symbol: 'Na'},
+    {name: 'Calcium', symbol: 'Ca'},
+    {name: 'Helium', symbol: 'He'}
+];
+
+let currentElement = null;
+
+function startChemistryQuiz() {
+    hideAllScreens();
+    document.getElementById('chemistry-screen').style.display = 'block';
+    nextChemistryElement();
+}
+
+function nextChemistryElement() {
+    currentElement = elements[Math.floor(Math.random() * elements.length)];
+    document.getElementById('chemistry-element').textContent = currentElement.name;
+    document.getElementById('chemistry-answer').value = '';
+    document.getElementById('chemistry-result').textContent = '';
+    document.getElementById('chemistry-result').className = 'result-message';
+}
+
+function checkChemistryAnswer() {
+    const answer = document.getElementById('chemistry-answer').value.trim();
+    const resultDiv = document.getElementById('chemistry-result');
+    
+    if (answer === currentElement.symbol) {
+        resultDiv.textContent = '🎉 Correct! Excellent!';
+        resultDiv.className = 'result-message result-correct';
+    } else {
+        resultDiv.textContent = `❌ Wrong! The correct symbol for ${currentElement.name} is: ${currentElement.symbol} (Case sensitive!)`;
+        resultDiv.className = 'result-message result-incorrect';
+    }
+}
+
+function exitChemistryQuiz() {
+    hideAllScreens();
+    document.getElementById('welcome-screen').style.display = 'block';
+}
+
+// Helper function
+function hideAllScreens() {
+    document.getElementById('welcome-screen').style.display = 'none';
+    document.getElementById('start-screen').style.display = 'none';
+    document.getElementById('quiz-screen').style.display = 'none';
+    document.getElementById('result-screen').style.display = 'none';
+    document.getElementById('answer-screen').style.display = 'none';
+    document.getElementById('english-screen').style.display = 'none';
+    document.getElementById('maths-screen').style.display = 'none';
+    document.getElementById('chemistry-screen').style.display = 'none';
+}
+
+function showStartScreen() {
+    document.getElementById('welcome-screen').style.display = 'none';
+    document.getElementById('start-screen').style.display = 'block';
+    document.getElementById('quiz-screen').style.display = 'none';
+    document.getElementById('result-screen').style.display = 'none';
+    document.getElementById('answer-screen').style.display = 'none';
+}
+
+// Add double-click to footer
+document.addEventListener('DOMContentLoaded', function() {
+    const footer = document.querySelector('.footer-creator-name');
+    if (footer) footer.addEventListener('dblclick', showAllPlayers);
+});
 
 // শেক অ্যানিমেশন CSS যোগ করা
 const style = document.createElement('style');
