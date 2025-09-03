@@ -1323,6 +1323,9 @@ body {
     transition: all 0.3s ease;
     border: 1px solid rgba(255, 255, 255, 0.2);
     min-width: 120px;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
 }
 
 .nav-item:hover {
@@ -1551,5 +1554,37 @@ body {
         flex-direction: column;
         align-items: flex-start;
         gap: 0.5rem;
+    }
+    
+    /* Mobile Navigation */
+    .nav-container {
+        flex-wrap: wrap;
+        gap: 1rem;
+        padding: 0 1rem;
+    }
+    
+    .nav-item {
+        min-width: 100px;
+        padding: 1.2rem 0.8rem;
+        touch-action: manipulation;
+        -webkit-tap-highlight-color: transparent;
+    }
+    
+    .nav-item:active {
+        transform: translateY(-1px) scale(0.98);
+        background: rgba(255, 255, 255, 0.3);
+    }
+    
+    .puzzle-actions {
+        flex-direction: column;
+        gap: 0.8rem;
+    }
+    
+    .puzzle-actions .btn {
+        width: 100%;
+        padding: 1.2rem;
+        font-size: 1.1rem;
+        touch-action: manipulation;
+        -webkit-tap-highlight-color: transparent;
     }
 }
