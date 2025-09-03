@@ -48,6 +48,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // কুইজ শুরু করার ফাংশন
 function startQuiz() {
+    // Check if questionBank is loaded
+    if (typeof questionBank === 'undefined') {
+        alert('প্রশ্ন লোড হচ্ছে না! পেজ রিফ্রেশ করুন।');
+        return;
+    }
+    
     // ইনপুট ভ্যালিডেশন
     studentName = document.getElementById('student-name').value.trim();
     totalQuestions = parseInt(document.getElementById('question-count').value);
@@ -72,6 +78,11 @@ function startQuiz() {
     // প্রশ্ন প্রস্তুত করা
     prepareQuestions();
     
+    if (currentQuestions.length === 0) {
+        alert('কোনো প্রশ্ন পাওয়া যায়নি!');
+        return;
+    }
+    
     // স্ক্রিন পরিবর্তন
     document.getElementById('start-screen').style.display = 'none';
     document.getElementById('quiz-screen').style.display = 'block';
@@ -84,6 +95,12 @@ function startQuiz() {
 function prepareQuestions() {
     currentQuestions = [];
     subjectScores = {};
+    
+    // Check if questionBank exists
+    if (typeof questionBank === 'undefined') {
+        console.error('questionBank is not defined');
+        return;
+    }
     
     // সব বিষয় ও সব শ্রেণী থেকে প্রশ্ন নেওয়া
     const subjects = ['history', 'geography', 'physical_science', 'life_science', 'english', 'bengali'];
@@ -104,9 +121,13 @@ function prepareQuestions() {
         });
     });
     
+    console.log('Total questions found:', currentQuestions.length);
+    
     // প্রশ্ন শাফল করা এবং নির্দিষ্ট সংখ্যক নেওয়া
     currentQuestions = shuffleArray(currentQuestions).slice(0, totalQuestions);
     totalQuestions = currentQuestions.length;
+    
+    console.log('Questions prepared:', totalQuestions);
 }
 
 // র‍্যান্ডম প্রশ্ন নির্বাচন
@@ -351,13 +372,25 @@ function showSubjectBreakdown() {
     const container = document.getElementById('subject-breakdown');
     let html = '<h3>বিষয়ভিত্তিক ফলাফল:</h3>';
     
+    // বিষয়ের নাম ম্যাপিং (যদি questions.js থেকে লোড না হয়)
+    const localSubjectNames = {
+        history: "ইতিহাস",
+        geography: "ভূগোল", 
+        physical_science: "ভৌত বিজ্ঞান",
+        life_science: "জীবন বিজ্ঞান",
+        english: "ইংরেজি",
+        bengali: "বাংলা"
+    };
+    
+    const subjectNamesMap = (typeof subjectNames !== 'undefined') ? subjectNames : localSubjectNames;
+    
     Object.keys(subjectScores).forEach(subject => {
         const subjectData = subjectScores[subject];
         if (subjectData.total > 0) {
             const subjectPercentage = Math.round((subjectData.correct / subjectData.total) * 100);
             html += `
                 <div class="subject-score">
-                    <span class="subject-name">${subjectNames[subject]}:</span>
+                    <span class="subject-name">${subjectNamesMap[subject] || subject}:</span>
                     <span class="subject-result">${subjectData.correct}/${subjectData.total} (${subjectPercentage}%)</span>
                 </div>
             `;
@@ -385,7 +418,7 @@ function showAnswers() {
             <div class="answer-item ${answer.isCorrect ? 'correct-answer' : 'incorrect-answer'}">
                 <div class="answer-header">
                     <span class="question-number">প্রশ্ন ${questionNum}</span>
-                    <span class="subject-tag">${subjectNames[answer.subject]}</span>
+                    <span class="subject-tag">${(typeof subjectNames !== 'undefined' ? subjectNames[answer.subject] : answer.subject) || 'অজানা বিষয়'}</span>
                 </div>
                 <div class="question-text">${answer.question}</div>
                 <div class="answer-options">
