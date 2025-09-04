@@ -5,11 +5,17 @@ let score = 0;
 let studentName = '';
 let selectedClass = '';
 let selectedSubject = '';
-let totalQuestions = 10;
+let totalQuestions = 20;
 let timer = 30;
 let timerInterval = null;
 let userAnswers = [];
 let subjectScores = {};
+
+// Quiz set management
+let allQuestions = [];
+let questionSets = [];
+let currentSetIndex = 0;
+let userProgress = JSON.parse(localStorage.getItem('quizProgress')) || {};
 
 // পার্টিকেল সিস্টেম ইনিশিয়ালাইজেশন
 function initParticles() {
@@ -29,6 +35,7 @@ function initParticles() {
 // পেজ লোড হলে পার্টিকেল সিস্টেম চালু করা
 document.addEventListener('DOMContentLoaded', function() {
     initParticles();
+    initDynamicMessages();
     
     // বাটনে রিপল ইফেক্ট যোগ করা
     document.addEventListener('click', function(e) {
@@ -46,6 +53,45 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
+// Dynamic Messages System
+let currentMessageIndex = 0;
+let messageInterval = null;
+
+function initDynamicMessages() {
+    if (typeof runningMessages === 'undefined' || runningMessages.length === 0) {
+        return; // Use default message if no dynamic messages
+    }
+    
+    // Filter active messages and sort by priority
+    const activeMessages = runningMessages
+        .filter(msg => msg.active)
+        .sort((a, b) => a.priority - b.priority);
+    
+    if (activeMessages.length === 0) {
+        return; // Use default message if no active messages
+    }
+    
+    // Start cycling through messages
+    cycleMessages(activeMessages);
+}
+
+function cycleMessages(messages) {
+    const messageElement = document.getElementById('dynamic-message');
+    
+    function updateMessage() {
+        if (messages.length > 0) {
+            messageElement.textContent = messages[currentMessageIndex].text;
+            currentMessageIndex = (currentMessageIndex + 1) % messages.length;
+        }
+    }
+    
+    // Show first message immediately
+    updateMessage();
+    
+    // Cycle through messages every 8 seconds
+    messageInterval = setInterval(updateMessage, 8000);
+}
+
 // কুইজ শুরু করার ফাংশন
 function startQuiz() {
     // Check if questionBank is loaded
@@ -56,7 +102,6 @@ function startQuiz() {
     
     // ইনপুট ভ্যালিডেশন
     studentName = document.getElementById('student-name').value.trim();
-    totalQuestions = parseInt(document.getElementById('question-count').value);
     
     if (!studentName) {
         // কাস্টম অ্যালার্ট ইফেক্ট
@@ -91,10 +136,9 @@ function startQuiz() {
     loadQuestion();
 }
 
-// প্রশ্ন প্রস্তুত করার ফাংশন
-function prepareQuestions() {
-    currentQuestions = [];
-    subjectScores = {};
+// Initialize question sets
+function initializeQuestionSets() {
+    allQuestions = [];
     
     // Check if questionBank exists
     if (typeof questionBank === 'undefined') {
@@ -107,27 +151,64 @@ function prepareQuestions() {
     const classes = [5, 6, 7, 8];
     
     subjects.forEach(subject => {
-        subjectScores[subject] = { correct: 0, total: 0 };
-        
         classes.forEach(classNum => {
             if (questionBank[subject] && questionBank[subject][classNum]) {
                 const subjectQuestions = questionBank[subject][classNum];
                 subjectQuestions.forEach(q => {
                     q.subject = subject;
                     q.class = classNum;
-                    currentQuestions.push(q);
+                    allQuestions.push(q);
                 });
             }
         });
     });
     
-    console.log('Total questions found:', currentQuestions.length);
+    // Shuffle all questions once
+    allQuestions = shuffleArray(allQuestions);
     
-    // প্রশ্ন শাফল করা এবং নির্দিষ্ট সংখ্যক নেওয়া
-    currentQuestions = shuffleArray(currentQuestions).slice(0, totalQuestions);
+    // Create sets of 20 questions each
+    questionSets = [];
+    for (let i = 0; i < allQuestions.length; i += 20) {
+        questionSets.push(allQuestions.slice(i, i + 20));
+    }
+    
+    console.log(`Total questions: ${allQuestions.length}, Total sets: ${questionSets.length}`);
+}
+
+// প্রশ্ন প্রস্তুত করার ফাংশন
+function prepareQuestions() {
+    // Initialize sets if not done
+    if (questionSets.length === 0) {
+        initializeQuestionSets();
+    }
+    
+    // Get user's current set index
+    const userName = studentName || 'default';
+    if (!userProgress[userName]) {
+        userProgress[userName] = { currentSet: 0, completedSets: [] };
+    }
+    
+    currentSetIndex = userProgress[userName].currentSet;
+    
+    // If user completed all sets, start from beginning
+    if (currentSetIndex >= questionSets.length) {
+        currentSetIndex = 0;
+        userProgress[userName].currentSet = 0;
+        userProgress[userName].completedSets = [];
+    }
+    
+    // Get current set of questions
+    currentQuestions = questionSets[currentSetIndex] || [];
     totalQuestions = currentQuestions.length;
     
-    console.log('Questions prepared:', totalQuestions);
+    // Initialize subject scores
+    subjectScores = {};
+    const subjects = ['history', 'geography', 'physical_science', 'life_science', 'english', 'bengali'];
+    subjects.forEach(subject => {
+        subjectScores[subject] = { correct: 0, total: 0 };
+    });
+    
+    console.log(`Playing Set ${currentSetIndex + 1}/${questionSets.length} with ${totalQuestions} questions`);
 }
 
 // র‍্যান্ডম প্রশ্ন নির্বাচন
@@ -157,6 +238,9 @@ function loadQuestion() {
     
     // প্রশ্ন আপডেট
     document.getElementById('question').textContent = question.question;
+    
+    // সেট ইন্ডিকেটর আপডেট
+    updateSetIndicator();
     
     // প্রগ্রেস আপডেট
     updateProgress();
@@ -298,6 +382,24 @@ function updateTimerDisplay() {
     }
 }
 
+// সেট ইন্ডিকেটর আপডেট
+function updateSetIndicator() {
+    const bengaliNumbers = ['০', '১', '২', '৩', '৪', '৫', '৬', '৭', '৮', '৯'];
+    const setNumber = (currentSetIndex + 1).toString().split('').map(d => bengaliNumbers[parseInt(d)]).join('');
+    const totalSets = questionSets.length.toString().split('').map(d => bengaliNumbers[parseInt(d)]).join('');
+    
+    const setIndicator = document.getElementById('current-set');
+    if (setIndicator) {
+        setIndicator.textContent = `সেট ${setNumber}/${totalSets}`;
+        
+        // অ্যানিমেশন ইফেক্ট
+        setIndicator.style.transform = 'scale(1.1)';
+        setTimeout(() => {
+            setIndicator.style.transform = 'scale(1)';
+        }, 300);
+    }
+}
+
 // প্রগ্রেস আপডেট
 function updateProgress() {
     const progress = ((currentQuestionIndex + 1) / totalQuestions) * 100;
@@ -319,6 +421,21 @@ function showResults() {
     document.getElementById('result-screen').style.display = 'block';
     
     const percentage = Math.round((score / totalQuestions) * 100);
+    
+    // Update user progress
+    const userName = studentName || 'default';
+    if (!userProgress[userName]) {
+        userProgress[userName] = { currentSet: 0, completedSets: [] };
+    }
+    
+    // Mark current set as completed
+    if (!userProgress[userName].completedSets.includes(currentSetIndex)) {
+        userProgress[userName].completedSets.push(currentSetIndex);
+    }
+    
+    // Move to next set
+    userProgress[userName].currentSet = currentSetIndex + 1;
+    localStorage.setItem('quizProgress', JSON.stringify(userProgress));
     
     // স্কোর সার্কেল অ্যানিমেশন
     const scoreCircle = document.getElementById('score-circle');
@@ -345,7 +462,17 @@ function showResults() {
         return bengaliNumbers[parseInt(d)];
     }).join('');
     
-    document.getElementById('score-details').textContent = `আপনি ${bengaliTotal}টি প্রশ্নের মধ্যে ${bengaliScore}টি সঠিক উত্তর দিয়েছেন`;
+    const currentSetNum = (currentSetIndex + 1).toString().split('').map(d => {
+        const bengaliNumbers = ['০', '১', '২', '৩', '৪', '৫', '৬', '৭', '৮', '৯'];
+        return bengaliNumbers[parseInt(d)];
+    }).join('');
+    
+    const totalSets = questionSets.length.toString().split('').map(d => {
+        const bengaliNumbers = ['০', '১', '২', '৩', '৪', '৫', '৬', '৭', '৮', '৯'];
+        return bengaliNumbers[parseInt(d)];
+    }).join('');
+    
+    document.getElementById('score-details').textContent = `সেট ${currentSetNum}/${totalSets}: আপনি ${bengaliTotal}টি প্রশ্নের মধ্যে ${bengaliScore}টি সঠিক উত্তর দিয়েছেন`;
     
     // পারফরম্যান্স ব্যাজ
     const badge = document.getElementById('performance-badge');
@@ -366,8 +493,87 @@ function showResults() {
     // বিষয়ভিত্তিক ফলাফল
     showSubjectBreakdown();
     
+    // Show next set option
+    showNextSetOption();
+    
     // Track player
     trackPlayer();
+}
+
+// Show next set option
+function showNextSetOption() {
+    const userName = studentName || 'default';
+    const nextSetIndex = userProgress[userName].currentSet;
+    
+    let nextSetHtml = '';
+    
+    if (nextSetIndex < questionSets.length) {
+        // More sets available
+        const nextSetNum = (nextSetIndex + 1).toString().split('').map(d => {
+            const bengaliNumbers = ['০', '১', '২', '৩', '৪', '৫', '৬', '৭', '৮', '৯'];
+            return bengaliNumbers[parseInt(d)];
+        }).join('');
+        
+        nextSetHtml = `
+            <div class="next-set-section">
+                <h3>🎯 পরবর্তী সেট</h3>
+                <p>আপনি সেট ${nextSetNum} খেলতে চান?</p>
+                <button onclick="playNextSet()" class="btn btn-primary pulse-btn">
+                    <span>সেট ${nextSetNum} খেলুন</span>
+                </button>
+            </div>
+        `;
+    } else {
+        // All sets completed, start from beginning
+        nextSetHtml = `
+            <div class="next-set-section">
+                <h3>🎉 সব সেট সম্পন্ন!</h3>
+                <p>আপনি সব ${questionSets.length}টি সেট সম্পন্ন করেছেন! আবার শুরু করুন?</p>
+                <button onclick="restartAllSets()" class="btn btn-primary pulse-btn">
+                    <span>আবার শুরু করুন</span>
+                </button>
+            </div>
+        `;
+    }
+    
+    // Add to result screen
+    const resultActions = document.querySelector('.result-actions');
+    if (resultActions && !document.querySelector('.next-set-section')) {
+        resultActions.insertAdjacentHTML('beforebegin', nextSetHtml);
+    }
+}
+
+// Play next set
+function playNextSet() {
+    // Reset quiz variables
+    currentQuestionIndex = 0;
+    score = 0;
+    userAnswers = [];
+    clearInterval(timerInterval);
+    
+    // Prepare next set
+    prepareQuestions();
+    
+    if (currentQuestions.length === 0) {
+        alert('কোনো প্রশ্ন পাওয়া যায়নি!');
+        return;
+    }
+    
+    // Start next set
+    document.getElementById('result-screen').style.display = 'none';
+    document.getElementById('quiz-screen').style.display = 'block';
+    
+    // Load first question
+    loadQuestion();
+}
+
+// Restart all sets
+function restartAllSets() {
+    const userName = studentName || 'default';
+    userProgress[userName] = { currentSet: 0, completedSets: [] };
+    localStorage.setItem('quizProgress', JSON.stringify(userProgress));
+    
+    playNextSet();
 }
 
 // বিষয়ভিত্তিক ফলাফল দেখানো
@@ -457,6 +663,12 @@ function restartQuiz() {
     subjectScores = {};
     clearInterval(timerInterval);
     
+    // Remove next set section if exists
+    const nextSetSection = document.querySelector('.next-set-section');
+    if (nextSetSection) {
+        nextSetSection.remove();
+    }
+    
     // স্ক্রিন রিসেট
     document.getElementById('result-screen').style.display = 'none';
     document.getElementById('answer-screen').style.display = 'none';
@@ -464,7 +676,6 @@ function restartQuiz() {
     
     // ফর্ম রিসেট
     document.getElementById('student-name').value = '';
-    document.getElementById('question-count').value = '10';
 }
 
 // কুইজ বন্ধ করা
@@ -477,13 +688,18 @@ function quitQuiz() {
 // Track who played
 function trackPlayer() {
     const players = JSON.parse(localStorage.getItem('allPlayers') || '[]');
+    const bengaliNumbers = ['০', '১', '২', '৩', '৪', '৫', '৬', '৭', '৮', '৯'];
+    const setNumber = (currentSetIndex + 1).toString().split('').map(d => bengaliNumbers[parseInt(d)]).join('');
+    
     players.push({
         name: studentName,
         score: score,
         total: totalQuestions,
         percentage: Math.round((score / totalQuestions) * 100),
         date: new Date().toLocaleDateString(),
-        time: new Date().toLocaleTimeString()
+        time: new Date().toLocaleTimeString(),
+        setIndex: currentSetIndex,
+        setNumber: setNumber
     });
     localStorage.setItem('allPlayers', JSON.stringify(players));
 }
@@ -496,7 +712,15 @@ function showAllPlayers() {
         return;
     }
     
-    showDynamicPopup('খেলোয়াড়দের তালিকা', players);
+    // Sort by percentage in descending order, then by set number in descending order
+    const sortedPlayers = players.sort((a, b) => {
+        if (b.percentage !== a.percentage) {
+            return b.percentage - a.percentage;
+        }
+        return (b.setIndex || 0) - (a.setIndex || 0);
+    });
+    
+    showDynamicPopup('খেলোয়াড়দের তালিকা', sortedPlayers);
 }
 
 // Dynamic popup function
@@ -522,7 +746,7 @@ function showDynamicPopup(title, players) {
                             <div class="player-rank">${i + 1}</div>
                             <div class="player-info">
                                 <div class="player-name">${p.name}</div>
-                                <div class="player-details">${p.date} ${p.time}</div>
+                                <div class="player-details">${p.setNumber ? `সেট ${p.setNumber} - ` : ''}${p.date} ${p.time}</div>
                             </div>
                             <div class="player-score">${p.percentage}%</div>
                         </div>
@@ -541,6 +765,86 @@ function showDynamicPopup(title, players) {
 // Close popup
 function closeDynamicPopup() {
     const popup = document.getElementById('dynamic-popup');
+    if (popup) {
+        popup.classList.remove('show');
+        setTimeout(() => popup.remove(), 300);
+    }
+}
+
+// Show app updates
+function showUpdates() {
+    // Check if updates are loaded from external file
+    if (typeof appUpdates === 'undefined') {
+        alert('আপডেট তথ্য লোড করতে সমস্যা!');
+        return;
+    }
+    
+    showUpdatePopup('🔔 অ্যাপ আপডেট', appUpdates);
+}
+
+// Show update popup
+function showUpdatePopup(title, updates) {
+    // Remove existing popup
+    const existingPopup = document.getElementById('update-popup');
+    if (existingPopup) existingPopup.remove();
+    
+    // Create popup
+    const popup = document.createElement('div');
+    popup.id = 'update-popup';
+    popup.innerHTML = `
+        <div class="popup-overlay">
+            <div class="popup-content update-content">
+                <div class="popup-header">
+                    <h3>${title}</h3>
+                    <button class="popup-close" onclick="closeUpdatePopup()">×</button>
+                </div>
+                <div class="popup-body">
+                    ${updates.map(update => `
+                        <div class="update-item">
+                            <div class="update-header">
+                                <span class="update-version">${update.version}</span>
+                                <span class="update-date">${update.date}</span>
+                            </div>
+                            <div class="update-changes">
+                                ${update.changes.map(change => `
+                                    <div class="change-item">
+                                        <span class="change-icon">✓</span>
+                                        <span class="change-text">${change}</span>
+                                    </div>
+                                `).join('')}
+                            </div>
+                            ${update.newApps ? `
+                                <div class="new-apps-section">
+                                    <h4>🎆 নতুন অ্যাপ</h4>
+                                    ${update.newApps.map(app => `
+                                        <div class="app-item">
+                                            <div class="app-info">
+                                                <span class="app-name">${app.name}</span>
+                                                <span class="app-description">${app.description}</span>
+                                            </div>
+                                            <a href="${app.link}" target="_blank" class="app-link">
+                                                <span>খুলুন</span> 🔗
+                                            </a>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            ` : ''}
+                        </div>
+                    `).join('')}
+                </div>
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(popup);
+    
+    // Add animation
+    setTimeout(() => popup.classList.add('show'), 10);
+}
+
+// Close update popup
+function closeUpdatePopup() {
+    const popup = document.getElementById('update-popup');
     if (popup) {
         popup.classList.remove('show');
         setTimeout(() => popup.remove(), 300);
@@ -695,12 +999,100 @@ function showStartScreen() {
     document.getElementById('quiz-screen').style.display = 'none';
     document.getElementById('result-screen').style.display = 'none';
     document.getElementById('answer-screen').style.display = 'none';
+    
+    // সম্পন্ন সেট লোড করা
+    loadCompletedSets();
+}
+
+// সম্পন্ন সেট লোড করার ফাংশন
+function loadCompletedSets() {
+    const userName = document.getElementById('student-name').value.trim() || 'default';
+    const progress = userProgress[userName];
+    
+    if (!progress || progress.currentSet === 0) {
+        document.getElementById('set-selector').style.display = 'none';
+        return;
+    }
+    
+    const selector = document.getElementById('completed-sets');
+    const bengaliNumbers = ['০', '১', '২', '৩', '৪', '৫', '৬', '৭', '৮', '৯'];
+    
+    // অপশন ক্লিয়ার করা
+    selector.innerHTML = '<option value="">একটি সেট বেছে নিন</option>';
+    
+    // বর্তমান সেট পর্যন্ত সব সেট যোগ করা
+    for (let i = 0; i < progress.currentSet; i++) {
+        const setNumber = (i + 1).toString().split('').map(d => bengaliNumbers[parseInt(d)]).join('');
+        const option = document.createElement('option');
+        option.value = i;
+        option.textContent = `সেট ${setNumber}`;
+        selector.appendChild(option);
+    }
+    
+    document.getElementById('set-selector').style.display = 'block';
+}
+
+// নির্বাচিত সেট শুরু করার ফাংশন
+function startSelectedSet() {
+    const selectedSetIndex = parseInt(document.getElementById('completed-sets').value);
+    
+    if (isNaN(selectedSetIndex)) {
+        alert('দয়া করে একটি সেট বেছে নিন!');
+        return;
+    }
+    
+    studentName = document.getElementById('student-name').value.trim();
+    
+    if (!studentName) {
+        alert('দয়া করে আপনার নাম লিখুন!');
+        return;
+    }
+    
+    // সেট ইন্ডেক্স সেট করা
+    currentSetIndex = selectedSetIndex;
+    
+    // প্রশ্ন প্রস্তুত করা
+    selectedSubject = 'mixed';
+    selectedClass = 'all';
+    
+    if (questionSets.length === 0) {
+        initializeQuestionSets();
+    }
+    
+    currentQuestions = questionSets[currentSetIndex] || [];
+    totalQuestions = currentQuestions.length;
+    
+    if (currentQuestions.length === 0) {
+        alert('কোনো প্রশ্ন পাওয়া যায়নি!');
+        return;
+    }
+    
+    // স্কোর রিসেট
+    currentQuestionIndex = 0;
+    score = 0;
+    userAnswers = [];
+    subjectScores = {};
+    
+    // স্ক্রিন পরিবর্তন
+    document.getElementById('start-screen').style.display = 'none';
+    document.getElementById('quiz-screen').style.display = 'block';
+    
+    // প্রথম প্রশ্ন লোড
+    loadQuestion();
 }
 
 // Add double-click to footer
 document.addEventListener('DOMContentLoaded', function() {
     const footer = document.querySelector('.footer-creator-name');
     if (footer) footer.addEventListener('dblclick', showAllPlayers);
+    
+    // নাম ইনপুট ইভেন্ট লিসেনার
+    const nameInput = document.getElementById('student-name');
+    if (nameInput) {
+        nameInput.addEventListener('input', function() {
+            setTimeout(loadCompletedSets, 100);
+        });
+    }
 });
 
 // শেক অ্যানিমেশন CSS যোগ করা
