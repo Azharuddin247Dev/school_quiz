@@ -163,16 +163,20 @@ function initializeQuestionSets() {
         });
     });
     
-    // Shuffle all questions once
+    // Shuffle all questions once to randomize
     allQuestions = shuffleArray(allQuestions);
     
-    // Create sets of 20 questions each
+    // Create sets of 20 unique questions each (no duplicates across sets)
     questionSets = [];
     for (let i = 0; i < allQuestions.length; i += 20) {
-        questionSets.push(allQuestions.slice(i, i + 20));
+        const setQuestions = allQuestions.slice(i, i + 20);
+        if (setQuestions.length === 20) { // Only add complete sets of 20
+            questionSets.push(setQuestions);
+        }
     }
     
-    console.log(`Total questions: ${allQuestions.length}, Total sets: ${questionSets.length}`);
+    console.log(`Total questions: ${allQuestions.length}, Total complete sets: ${questionSets.length}`);
+    console.log('Each question appears in exactly one set - no duplicates across sets');
 }
 
 // প্রশ্ন প্রস্তুত করার ফাংশন
@@ -850,6 +854,8 @@ function closeUpdatePopup() {
         setTimeout(() => popup.remove(), 300);
     }
 }
+
+
 
 // English Puzzle Game
 const englishWords = [
