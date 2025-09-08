@@ -37,7 +37,7 @@ const appUpdates = [
     newApps: [
       {
         name: "QuizMaster Pro",
-        description: "Play single or Multiplayer Mode",
+        description: "Play single or Multiplayer Mode",       
         link: "https://azharuddin247dev.github.io/quiz_app/",
       },
     ],
