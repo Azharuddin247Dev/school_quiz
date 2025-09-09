@@ -355,7 +355,7 @@ function skipQuestion() {
 
 // টাইমার শুরু
 function startTimer() {
-    timer = 30;
+    timer = 60;
     updateTimerDisplay();
     
     timerInterval = setInterval(() => {
@@ -372,7 +372,7 @@ function startTimer() {
 // টাইমার ডিসপ্লে আপডেট
 function updateTimerDisplay() {
     document.getElementById('timer-text').textContent = timer;
-    const percentage = (timer / 30) * 100;
+    const percentage = (timer / 60) * 100;
     document.getElementById('timer-bar').style.setProperty('--width', percentage + '%');
     
     // রঙ পরিবর্তন
