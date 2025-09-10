@@ -12,7 +12,7 @@ const appUpdates = [
   ],
   newApps: [
     {
-      name: "গণিত কুইজ মাস্টার",
+      name: "Mathematics Learning App for Classes V to VIII",
       description: "মজার ও শিক্ষামূলক গণিত কুইজ খেলুন বিভিন্ন স্তরে",
       link: "https://azharuddin247dev.github.io/Mathematics/"
     }
