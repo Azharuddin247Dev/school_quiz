@@ -22,6 +22,14 @@ const runningMessages = [
     active: false,
     priority: 3,
   },
+  {
+  id: 4,
+  text: "📱 আমি একটি নতুন গণিত অ্যাপ যোগ করেছি! লিঙ্কটি 'নতুন আপডেট' অপশনে দেখতে পাবেন।",
+  type: "update",
+  active: true,
+  priority: 1
+}
+
 ];
 
 // INSTRUCTIONS FOR ADDING NEW MESSAGES:
