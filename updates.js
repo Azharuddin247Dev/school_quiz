@@ -1,6 +1,23 @@
 // App Updates Configuration
 // TO ADD NEW UPDATES: Add new version objects at the TOP of this array
 const appUpdates = [
+  {
+  version: "ভার্সন ২.৪",
+  date: "১০/০৯/২০২৫",
+  changes: [
+    "নতুন গণিত কুইজ অ্যাপ যোগ করা হয়েছে",
+    "বিভিন্ন স্তরের সমস্যা সমাধানের সুযোগ",
+    "ডাইনামিক প্রশ্ন ব্যাংক ও স্কোর ট্র্যাকিং",
+    "ইউজার ফ্রেন্ডলি ইন্টারফেস এবং অ্যানিমেশন উন্নতি"
+  ],
+  newApps: [
+    {
+      name: "গণিত কুইজ মাস্টার",
+      description: "মজার ও শিক্ষামূলক গণিত কুইজ খেলুন বিভিন্ন স্তরে",
+      link: "https://azharuddin247dev.github.io/Mathematics/"
+    }
+  ]
+},
   
   {
     "version": "ভার্সন ২.৩",
