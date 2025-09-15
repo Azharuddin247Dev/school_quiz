@@ -1250,3 +1250,44 @@ style.textContent = `
     }
 `;
 document.head.appendChild(style);
+
+// Your web app's Firebase configuration
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const firebaseConfig = {
+  apiKey: "AIzaSyAGChGDaMgvpnvAAnJaSM0QI6f9DaVSEj8",
+  authDomain: "quizapp-47539.firebaseapp.com",
+  projectId: "quizapp-47539",
+  storageBucket: "quizapp-47539.firebasestorage.app",
+  messagingSenderId: "459756440960",
+  appId: "1:459756440960:web:a14ea6d3db3641262ac565",
+  measurementId: "G-2Q5YD4NG7J"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+// Firestore instance
+const db = firebase.firestore();
+const analytics = getAnalytics(app);
+
+function saveScore(userName, score) {
+  db.collection("scores").add({
+    name: userName,
+    score: score,
+    timestamp: firebase.firestore.FieldValue.serverTimestamp()
+  })
+  .then(() => {
+    console.log("Score saved successfully!");
+  })
+  .catch((error) => {
+    console.error("Error saving score:", error);
+  });
+}
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /scores/{docId} {
+      allow read, write: if false;  // no one can read or write by default
+    }
+  }
+}
+
