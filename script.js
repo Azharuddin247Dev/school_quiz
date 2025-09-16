@@ -1333,3 +1333,12 @@ window.onclick = function(event) {
     }
 };
 
+db.collection("scores").doc(userName).set({
+    name: userName,
+    completedSets: userProgress[userName].completedSets,
+    timestamp: firebase.firestore.FieldValue.serverTimestamp()
+});
+db.collection("scores").orderBy("timestamp", "desc").get()
+  .then((querySnapshot) => { /* process results */ });
+
+
