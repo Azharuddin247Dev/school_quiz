@@ -17,6 +17,19 @@ let questionSets = [];
 let currentSetIndex = 0;
 let userProgress = JSON.parse(localStorage.getItem("quizProgress")) || {};
 
+const firebaseConfig = {
+  apiKey: "AIzaSyArNnAk1en-hN8Wfvruf9uKOIYNkPY1Sxo",
+  authDomain: "multi-quiz-app-b3f23.firebaseapp.com",
+  projectId: "multi-quiz-app-b3f23",
+  storageBucket: "multi-quiz-app-b3f23.firebasestorage.app",
+  messagingSenderId: "917340379669",
+  appId: "1:917340379669:web:307aeafff7859500a18c1c",
+  measurementId: "G-VEENPDWNRF"
+};
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const analytics = getAnalytics(app);
+
 // পার্টিকেল সিস্টেম ইনিশিয়ালাইজেশন
 function initParticles() {
   const particlesContainer = document.getElementById("particles");
