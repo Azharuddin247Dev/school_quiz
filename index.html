@@ -11,6 +11,29 @@
         <!-- Firebase SDK -->
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+    <script type="module">
+  // Import SDK functions
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
+  import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-analytics.js";
+  import { getFirestore } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyArNnAk1en-hN8Wfvruf9uKOIYNkPY1Sxo",
+    authDomain: "multi-quiz-app-b3f23.firebaseapp.com",
+    projectId: "multi-quiz-app-b3f23",
+    storageBucket: "multi-quiz-app-b3f23.firebasestorage.app",
+    messagingSenderId: "917340379669",
+    appId: "1:917340379669:web:307aeafff7859500a18c1c",
+    measurementId: "G-VEENPDWNRF"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const analytics = getAnalytics(app);
+  const db = getFirestore(app);
+
+  window.db = db; // expose db globally if needed elsewhere
+</script>
+
 
 </head>
 
@@ -333,6 +356,9 @@
             </div>
         </footer>
     </div>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+
 
     <script src="questions.js"></script>
     <script src="updates.js"></script>
