@@ -8,15 +8,11 @@
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@300;400;500;600;700&display=swap"
         rel="stylesheet">
-        <!-- Firebase SDK -->
+      <!-- Firebase SDK -->
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
-    <script type="module">
-  // Import SDK functions
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
-  import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-analytics.js";
-  import { getFirestore } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
-
+<script>
+  // Your Firebase configuration
   const firebaseConfig = {
     apiKey: "AIzaSyArNnAk1en-hN8Wfvruf9uKOIYNkPY1Sxo",
     authDomain: "multi-quiz-app-b3f23.firebaseapp.com",
@@ -27,12 +23,12 @@
     measurementId: "G-VEENPDWNRF"
   };
 
-  const app = initializeApp(firebaseConfig);
-  const analytics = getAnalytics(app);
-  const db = getFirestore(app);
-
-  window.db = db; // expose db globally if needed elsewhere
+  // Initialize Firebase
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.firestore();
+  window.db = db; // optionally expose globally for debugging
 </script>
+
 
 
 </head>
