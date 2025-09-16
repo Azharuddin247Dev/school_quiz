@@ -17,19 +17,6 @@ let questionSets = [];
 let currentSetIndex = 0;
 let userProgress = JSON.parse(localStorage.getItem("quizProgress")) || {};
 
-const firebaseConfig = {
-  apiKey: "AIzaSyArNnAk1en-hN8Wfvruf9uKOIYNkPY1Sxo",
-  authDomain: "multi-quiz-app-b3f23.firebaseapp.com",
-  projectId: "multi-quiz-app-b3f23",
-  storageBucket: "multi-quiz-app-b3f23.firebasestorage.app",
-  messagingSenderId: "917340379669",
-  appId: "1:917340379669:web:307aeafff7859500a18c1c",
-  measurementId: "G-VEENPDWNRF"
-};
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
-
 // পার্টিকেল সিস্টেম ইনিশিয়ালাইজেশন
 function initParticles() {
   const particlesContainer = document.getElementById("particles");
@@ -1295,50 +1282,3 @@ style.textContent = `
     }
 `;
 document.head.appendChild(style);
-// Show leaderboard modal
-function showLeaderboard() {
-    const modal = document.getElementById("leaderboard-modal");
-    const contentDiv = document.getElementById("leaderboard-content");
-
-    // Load user progress from localStorage
-    const progress = JSON.parse(localStorage.getItem("quizProgress")) || {};
-    
-    if (Object.keys(progress).length === 0) {
-        contentDiv.innerHTML = "<p>কোনো ব্যবহারকারীর স্কোর নেই।</p>";
-    } else {
-        let html = "<ul>";
-        for (let user in progress) {
-            const userData = progress[user];
-            const completedSets = userData.completedSets.length;
-            html += `<li><strong>${user}</strong>: সম্পন্ন সেট ${completedSets}</li>`;
-        }
-        html += "</ul>";
-        contentDiv.innerHTML = html;
-    }
-
-    modal.style.display = "block";
-}
-
-// Close leaderboard modal
-function closeLeaderboard() {
-    const modal = document.getElementById("leaderboard-modal");
-    modal.style.display = "none";
-}
-
-// Close modal if clicked outside content
-window.onclick = function(event) {
-    const modal = document.getElementById("leaderboard-modal");
-    if (event.target === modal) {
-        modal.style.display = "none";
-    }
-};
-
-db.collection("scores").doc(userName).set({
-    name: userName,
-    completedSets: userProgress[userName].completedSets,
-    timestamp: firebase.firestore.FieldValue.serverTimestamp()
-});
-db.collection("scores").orderBy("timestamp", "desc").get()
-  .then((querySnapshot) => { /* process results */ });
-
-
