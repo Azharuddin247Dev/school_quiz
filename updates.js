@@ -1,6 +1,25 @@
 // App Updates Configuration
 // TO ADD NEW UPDATES: Add new version objects at the TOP of this array
 const appUpdates = [
+{
+  version: "ভার্সন ২.৫",
+  date: "২০/০৯/২০২৫",
+  changes: [
+    "নতুন ক্লাস-ভিত্তিক টেস্ট ওয়েব অ্যাপ যোগ করা হয়েছে",
+    "প্রতিটি অধ্যায় পড়ার পর টেস্ট দেওয়ার সুবিধা",
+    "ফায়ারবেস লগইন ও প্রগ্রেস সংরক্ষণ যুক্ত করা হয়েছে",
+    "ডাইনামিক ও আকর্ষণীয় ইন্টারফেস আপডেট"
+  ],
+  newApps: [
+    
+    {
+      name: "Mathematics Learning Class-wise Test Web App",
+      description: "প্রতিটি ক্লাস ও অধ্যায় অনুযায়ী পড়ুন এবং টেস্ট দিন",
+      link: "https://azharuddin247dev.github.io/Class-wise-test/"
+    }
+  ]
+},
+
   {
   version: "ভার্সন ২.৪",
   date: "১০/০৯/২০২৫",
