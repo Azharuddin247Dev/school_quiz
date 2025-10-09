@@ -1,0 +1,332 @@
+/* Authentication Styles */
+.auth-section {
+    text-align: center;
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+.auth-section h2 {
+    color: #333;
+    margin-bottom: 1rem;
+    font-size: 1.8rem;
+}
+
+.auth-section p {
+    color: #666;
+    margin-bottom: 2rem;
+    font-size: 1.1rem;
+}
+
+.auth-form {
+    text-align: left;
+}
+
+.auth-switch {
+    text-align: center;
+    margin-top: 1rem;
+    color: #666;
+}
+
+.auth-switch a {
+    color: #667eea;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.auth-switch a:hover {
+    text-decoration: underline;
+}
+
+/* User Info Styles */
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: white;
+    font-weight: 600;
+}
+
+.user-name {
+    background: linear-gradient(45deg, #ffd700, #ff6b6b);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-weight: 700;
+}
+
+/* Auth Button Styles */
+.auth-button {
+    background: linear-gradient(135deg, #28a745, #20c997);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.auth-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(40, 167, 69, 0.3);
+}
+
+/* Leaderboard Button Styles */
+.leaderboard-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: linear-gradient(135deg, #ffd700, #ff8c00);
+    color: white;
+    border: none;
+    padding: 0.7rem 1.2rem;
+    border-radius: 20px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.leaderboard-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(255, 215, 0, 0.4);
+}
+
+.leaderboard-icon {
+    font-size: 1.2rem;
+    animation: bounce 2s infinite;
+}
+
+/* Header Actions Layout */
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+/* Leaderboard Popup Styles */
+#leaderboard-popup {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 10000;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+}
+
+#leaderboard-popup.show {
+    opacity: 1;
+    visibility: visible;
+}
+
+.leaderboard-content {
+    max-width: 600px;
+    max-height: 80vh;
+    overflow-y: auto;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+}
+
+.score-item {
+    display: flex;
+    align-items: center;
+    padding: 15px;
+    margin-bottom: 10px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 15px;
+    transition: all 0.3s ease;
+    animation: slideIn 0.5s ease forwards;
+    opacity: 0;
+    transform: translateX(-50px);
+}
+
+.score-item:nth-child(1) { animation-delay: 0.1s; }
+.score-item:nth-child(2) { animation-delay: 0.2s; }
+.score-item:nth-child(3) { animation-delay: 0.3s; }
+.score-item:nth-child(4) { animation-delay: 0.4s; }
+.score-item:nth-child(5) { animation-delay: 0.5s; }
+
+.score-item:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.top-score {
+    background: linear-gradient(45deg, #ffd700, #ffed4e);
+    color: #333;
+    border: 2px solid #ffd700;
+    box-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+}
+
+.score-rank {
+    width: 40px;
+    height: 40px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 1.2rem;
+    color: white;
+    margin-right: 15px;
+}
+
+.top-score .score-rank {
+    background: #333;
+    color: #ffd700;
+}
+
+.score-info {
+    flex: 1;
+}
+
+.score-name {
+    font-weight: bold;
+    font-size: 1.1rem;
+    color: white;
+    margin-bottom: 5px;
+}
+
+.top-score .score-name {
+    color: #333;
+}
+
+.score-details {
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.top-score .score-details {
+    color: rgba(51, 51, 51, 0.8);
+}
+
+.score-percentage {
+    font-size: 1.3rem;
+    font-weight: bold;
+    color: #4CAF50;
+    background: rgba(255, 255, 255, 0.2);
+    padding: 8px 15px;
+    border-radius: 20px;
+}
+
+.top-score .score-percentage {
+    color: #333;
+    background: rgba(51, 51, 51, 0.1);
+}
+
+.no-scores {
+    text-align: center;
+    color: white;
+    font-size: 1.2rem;
+    margin: 20px 0;
+}
+
+/* Loading Overlay */
+#loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 10001;
+}
+
+.loading-spinner {
+    text-align: center;
+    color: white;
+}
+
+.spinner {
+    width: 50px;
+    height: 50px;
+    border: 5px solid rgba(255, 255, 255, 0.3);
+    border-top: 5px solid #667eea;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 20px;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Message Styles */
+.message {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 15px 20px;
+    border-radius: 10px;
+    color: white;
+    font-weight: 600;
+    z-index: 10000;
+    animation: slideIn 0.3s ease;
+}
+
+.message.success {
+    background: #28a745;
+}
+
+.message.error {
+    background: #dc3545;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateX(100%);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes slideOut {
+    from {
+        opacity: 1;
+        transform: translateX(0);
+    }
+    to {
+        opacity: 0;
+        transform: translateX(100%);
+    }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .header-actions {
+        flex-direction: column;
+        gap: 0.5rem;
+        align-items: center;
+    }
+    
+    .auth-section {
+        padding: 1rem;
+    }
+    
+    .leaderboard-content {
+        margin: 20px;
+        max-height: 70vh;
+    }
+    
+    .score-item {
+        flex-direction: column;
+        text-align: center;
+        gap: 10px;
+    }
+    
+    .score-rank {
+        margin-right: 0;
+    }
+}
