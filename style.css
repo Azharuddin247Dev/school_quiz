@@ -1328,6 +1328,18 @@ body {
         max-width: 400px !important;
         margin: 0 auto !important;
     }
+    
+    .top-row {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 0.5rem;
+    }
+    
+    .update-btn {
+        padding: 0.5rem 1rem;
+        font-size: 0.8rem;
+        min-width: auto;
+    }
 }
 
 .nav-item {
@@ -1997,6 +2009,22 @@ body {
     
     .creator-badge {
         order: -1;
+        padding: 0.6rem 1rem;
+        gap: 0.6rem;
+    }
+    
+    .creator-icon {
+        width: 40px;
+        height: 40px;
+        font-size: 1.5rem;
+    }
+    
+    .creator-name {
+        font-size: 1rem;
+    }
+    
+    .creator-label {
+        font-size: 0.7rem;
     }
     
     .logo-text h1 {
@@ -2059,18 +2087,19 @@ body {
     .nav-item {
         min-width: auto;
         width: 100%;
-        padding: 1rem 0.5rem;
+        padding: 0.8rem 0.5rem;
         touch-action: manipulation;
         -webkit-tap-highlight-color: transparent;
         font-size: 0.9rem;
     }
     
     .nav-text {
-        font-size: 0.8rem;
+        font-size: 0.75rem;
+        line-height: 1.1;
     }
     
     .nav-icon {
-        font-size: 1.3rem;
+        font-size: 1.2rem;
     }
     
     .nav-item:active {
