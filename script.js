@@ -553,8 +553,10 @@ function showResults() {
   // বিষয়ভিত্তিক ফলাফল
   showSubjectBreakdown();
 
-  // Show next set option
-  showNextSetOption();
+  // Show next set option only for regular quiz, not practice mode
+  if (typeof practiceSubject === 'undefined' || (!practiceSubject && !practiceClass)) {
+    showNextSetOption();
+  }
 
   // Using simple auth system
 }
@@ -789,13 +791,24 @@ function restartQuiz() {
     nextSetSection.remove();
   }
 
+  // Reset practice mode variables
+  practiceSubject = null;
+  practiceClass = null;
+
   // স্ক্রিন রিসেট
   document.getElementById("result-screen").style.display = "none";
   document.getElementById("answer-screen").style.display = "none";
-  document.getElementById("start-screen").style.display = "block";
+  
+  // Check if it was practice mode, return to welcome screen
+  if (typeof practiceSubject !== 'undefined' && (practiceSubject || practiceClass)) {
+    document.getElementById("welcome-screen").style.display = "block";
+  } else {
+    document.getElementById("start-screen").style.display = "block";
+  }
 
   // ফর্ম রিসেট
-  document.getElementById("student-name").value = "";
+  const nameInput = document.getElementById("student-name");
+  if (nameInput) nameInput.value = "";
 }
 
 // কুইজ বন্ধ করা
