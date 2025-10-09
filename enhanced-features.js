@@ -236,21 +236,21 @@ function showChallengeMode() {
             <p>কঠিন চ্যালেঞ্জে অংশ নিন এবং বিশেষ পুরস্কার জিতুন!</p>
             
             <div class="challenge-options">
-                <div class="challenge-card" onclick="startSpeedChallenge()">
+                <div class="challenge-card">
                     <div class="challenge-icon">⏱️</div>
                     <h3>স্পিড চ্যালেঞ্জ</h3>
                     <p>১০ সেকেন্ডে উত্তর দিন</p>
                     <div class="challenge-reward">🏆 ২x পয়েন্ট</div>
                 </div>
                 
-                <div class="challenge-card" onclick="startPerfectChallenge()">
+                <div class="challenge-card">
                     <div class="challenge-icon">💯</div>
                     <h3>পারফেক্ট চ্যালেঞ্জ</h3>
                     <p>একটি ভুল = গেম শেষ</p>
                     <div class="challenge-reward">🏆 ৩x পয়েন্ট</div>
                 </div>
                 
-                <div class="challenge-card" onclick="startMarathonChallenge()">
+                <div class="challenge-card">
                     <div class="challenge-icon">🏃</div>
                     <h3>ম্যারাথন চ্যালেঞ্জ</h3>
                     <p>৫০টি প্রশ্ন একসাথে</p>
@@ -258,7 +258,7 @@ function showChallengeMode() {
                 </div>
             </div>
             
-            <button onclick="hideAllScreens(); document.getElementById('welcome-screen').style.display='block';" class="btn btn-secondary">
+            <button class="btn btn-secondary">
                 ফিরে যান
             </button>
         </div>
@@ -266,6 +266,17 @@ function showChallengeMode() {
     
     document.querySelector('.main-content').appendChild(challengeScreen);
     challengeScreen.style.display = 'block';
+    
+    // Add event listeners
+    challengeScreen.querySelector('.challenge-card:nth-child(1)').addEventListener('click', startSpeedChallenge);
+    challengeScreen.querySelector('.challenge-card:nth-child(2)').addEventListener('click', startPerfectChallenge);
+    challengeScreen.querySelector('.challenge-card:nth-child(3)').addEventListener('click', startMarathonChallenge);
+    challengeScreen.querySelector('.btn-secondary').addEventListener('click', function() {
+        const screen = document.getElementById('challenge-screen');
+        if (screen) screen.remove();
+        hideAllScreens();
+        document.getElementById('welcome-screen').style.display = 'block';
+    });
 }
 
 let challengeMode = null;
