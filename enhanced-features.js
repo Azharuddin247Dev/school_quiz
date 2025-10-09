@@ -170,7 +170,7 @@ function showPracticeMode() {
                 </div>
             </div>
             
-            <button onclick="hideAllScreens(); document.getElementById('welcome-screen').style.display='block';" class="btn btn-secondary">
+            <button class="btn btn-secondary practice-back-btn">
                 ফিরে যান
             </button>
         </div>
@@ -178,6 +178,14 @@ function showPracticeMode() {
     
     document.querySelector('.main-content').appendChild(practiceScreen);
     practiceScreen.style.display = 'block';
+    
+    // Add event listener for back button
+    practiceScreen.querySelector('.practice-back-btn').addEventListener('click', function() {
+        const screen = document.getElementById('practice-screen');
+        if (screen) screen.remove();
+        hideAllScreens();
+        document.getElementById('welcome-screen').style.display = 'block';
+    });
 }
 
 let practiceSubject = null;
@@ -213,6 +221,10 @@ function initializePracticeQuiz() {
     currentQuestionIndex = 0;
     score = 0;
     userAnswers = [];
+    
+    // Remove practice screen and start quiz
+    const practiceScreen = document.getElementById('practice-screen');
+    if (practiceScreen) practiceScreen.remove();
     
     hideAllScreens();
     document.getElementById('quiz-screen').style.display = 'block';
