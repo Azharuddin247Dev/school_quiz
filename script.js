@@ -626,6 +626,10 @@ function playNextSet() {
   userAnswers = [];
   clearInterval(timerInterval);
 
+  // Update to next set from userProgress
+  currentSetIndex = userProgress.currentSet || 0;
+  console.log('Playing next set:', currentSetIndex + 1);
+  
   // Prepare next set
   prepareQuestions();
 
