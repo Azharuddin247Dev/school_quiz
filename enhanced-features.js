@@ -1,4 +1,4 @@
-// Enhanced Features for Quiz App 
+// Enhanced Features for Quiz App
 
 // User Profile System
 async function showProfile() {
@@ -332,6 +332,10 @@ function initializeChallengeQuiz(questionCount = 20) {
     score = 0;
     userAnswers = [];
     
+    // Remove challenge screen and start quiz
+    const challengeScreen = document.getElementById('challenge-screen');
+    if (challengeScreen) challengeScreen.remove();
+    
     hideAllScreens();
     document.getElementById('quiz-screen').style.display = 'block';
     loadQuestion();
@@ -386,11 +390,11 @@ async function getUserStats() {
                 }
             });
             
-            // Sort all best scores in descending order
-            const sortedScores = Object.values(userBestScores).sort((a, b) => b - a);
+            // Get unique scores and sort them
+            const uniqueScores = [...new Set(Object.values(userBestScores))].sort((a, b) => b - a);
             
-            // Find current user's rank (1-based)
-            rank = sortedScores.indexOf(bestScore) + 1;
+            // Find rank based on score (users with same score get same rank)
+            rank = uniqueScores.indexOf(bestScore) + 1;
         }
         
         return { totalGames, totalScore, avgPercentage, bestScore, streak, rank };
