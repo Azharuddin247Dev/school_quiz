@@ -28,6 +28,11 @@ try {
         
         // Update user data in database
         updateUserData(user);
+        
+        // Update online status
+        if (typeof updateUserOnlineStatus === 'function') {
+            updateUserOnlineStatus(true);
+        }
     } else {
         currentUser = null;
         isAuthenticated = false;
@@ -139,6 +144,10 @@ async function signIn() {
 // Sign out
 async function signOut() {
     try {
+        // Update online status before signing out
+        if (typeof updateUserOnlineStatus === 'function') {
+            await updateUserOnlineStatus(false);
+        }
         await auth.signOut();
         showMessage('সফলভাবে লগআউট হয়েছে!', 'success');
     } catch (error) {
