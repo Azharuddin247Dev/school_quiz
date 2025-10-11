@@ -46,7 +46,7 @@ async function showProfile() {
                         </div>
                         <div class="stat-card">
                             <div class="stat-value">${userStats.rank || 'N/A'}</div>
-                            <div class="stat-label">র্যাঙ্ক</div>
+                            <div class="stat-label">Rank</div>
                         </div>
                     </div>
                 </div>
