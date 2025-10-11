@@ -68,12 +68,49 @@ function closeProfilePopup() {
 
 // Achievement System
 const achievements = [
-    { id: 'first_quiz', name: 'প্রথম কুইজ', desc: 'প্রথম কুইজ সম্পন্ন করুন', icon: '🎯', condition: (stats) => stats.totalGames >= 1 },
-    { id: 'perfect_score', name: 'নিখুঁত স্কোর', desc: '১০০% স্কোর অর্জন করুন', icon: '💯', condition: (stats) => stats.bestScore >= 100 },
-    { id: 'quiz_master', name: 'কুইজ মাস্টার', desc: '১০টি কুইজ সম্পন্ন করুন', icon: '🏆', condition: (stats) => stats.totalGames >= 10 },
-    { id: 'high_scorer', name: 'উচ্চ স্কোরার', desc: '৯০% এর বেশি স্কোর করুন', icon: '⭐', condition: (stats) => stats.bestScore >= 90 },
-    { id: 'consistent', name: 'ধারাবাহিক', desc: '৫টি কুইজে পরপর ৮০%+ স্কোর', icon: '🔥', condition: (stats) => stats.streak >= 5 },
-    { id: 'explorer', name: 'অভিযাত্রী', desc: 'সব ধরনের গেম খেলুন', icon: '🗺️', condition: (stats) => stats.gamesPlayed && Object.keys(stats.gamesPlayed).length >= 4 }
+    // Beginner Achievements
+    { id: 'first_quiz', name: 'প্রথম কুইজ', desc: 'প্রথম কুইজ সম্পন্ন করুন', icon: '🎯', condition: (stats) => stats.totalGames >= 1, category: 'beginner' },
+    { id: 'first_win', name: 'প্রথম জয়', desc: '৫০% এর বেশি স্কোর করুন', icon: '🥉', condition: (stats) => stats.bestScore >= 50, category: 'beginner' },
+    { id: 'early_bird', name: 'প্রাথমিক পাখি', desc: '৩টি কুইজ সম্পন্ন করুন', icon: '🐦', condition: (stats) => stats.totalGames >= 3, category: 'beginner' },
+    
+    // Score Achievements
+    { id: 'good_score', name: 'ভালো স্কোর', desc: '৭০% এর বেশি স্কোর করুন', icon: '👍', condition: (stats) => stats.bestScore >= 70, category: 'score' },
+    { id: 'high_scorer', name: 'উচ্চ স্কোরার', desc: '৯০% এর বেশি স্কোর করুন', icon: '⭐', condition: (stats) => stats.bestScore >= 90, category: 'score' },
+    { id: 'perfect_score', name: 'নিখুঁত স্কোর', desc: '১০০% স্কোর অর্জন করুন', icon: '💯', condition: (stats) => stats.bestScore >= 100, category: 'score' },
+    { id: 'super_scorer', name: 'সুপার স্কোরার', desc: '৯৫% এর বেশি গড় স্কোর', icon: '🌟', condition: (stats) => stats.avgPercentage >= 95, category: 'score' },
+    
+    // Progress Achievements
+    { id: 'quiz_player', name: 'কুইজ খেলোয়াড়', desc: '৫টি কুইজ সম্পন্ন করুন', icon: '🎮', condition: (stats) => stats.totalGames >= 5, category: 'progress' },
+    { id: 'quiz_master', name: 'কুইজ মাস্টার', desc: '১০টি কুইজ সম্পন্ন করুন', icon: '🏆', condition: (stats) => stats.totalGames >= 10, category: 'progress' },
+    { id: 'quiz_expert', name: 'কুইজ বিশেষজ্ঞ', desc: '২৫টি কুইজ সম্পন্ন করুন', icon: '🎓', condition: (stats) => stats.totalGames >= 25, category: 'progress' },
+    { id: 'quiz_legend', name: 'কুইজ কিংবদন্তি', desc: '৫০টি কুইজ সম্পন্ন করুন', icon: '👑', condition: (stats) => stats.totalGames >= 50, category: 'progress' },
+    { id: 'quiz_champion', name: 'কুইজ চ্যাম্পিয়ন', desc: '১০০টি কুইজ সম্পন্ন করুন', icon: '🏅', condition: (stats) => stats.totalGames >= 100, category: 'progress' },
+    
+    // Consistency Achievements
+    { id: 'consistent', name: 'ধারাবাহিক', desc: '৫টি কুইজে পরপর ৮০%+ স্কোর', icon: '🔥', condition: (stats) => stats.streak >= 5, category: 'consistency' },
+    { id: 'unstoppable', name: 'অপ্রতিরোধ্য', desc: '১০টি কুইজে পরপর ৮০%+ স্কোর', icon: '⚡', condition: (stats) => stats.streak >= 10, category: 'consistency' },
+    { id: 'perfectionist', name: 'পূর্ণতাবাদী', desc: '৩টি কুইজে পরপর ১০০% স্কোর', icon: '💎', condition: (stats) => stats.perfectStreak >= 3, category: 'consistency' },
+    
+    // Ranking Achievements
+    { id: 'top_50', name: 'শীর্ষ ৫০', desc: 'লিডারবোর্ডে শীর্ষ ৫০ এ থাকুন', icon: '🥇', condition: (stats) => stats.rank <= 50 && stats.rank > 0, category: 'ranking' },
+    { id: 'top_20', name: 'শীর্ষ ২০', desc: 'লিডারবোর্ডে শীর্ষ ২০ এ থাকুন', icon: '🏆', condition: (stats) => stats.rank <= 20 && stats.rank > 0, category: 'ranking' },
+    { id: 'top_10', name: 'শীর্ষ ১০', desc: 'লিডারবোর্ডে শীর্ষ ১০ এ থাকুন', icon: '👑', condition: (stats) => stats.rank <= 10 && stats.rank > 0, category: 'ranking' },
+    { id: 'top_5', name: 'শীর্ষ ৫', desc: 'লিডারবোর্ডে শীর্ষ ৫ এ থাকুন', icon: '💫', condition: (stats) => stats.rank <= 5 && stats.rank > 0, category: 'ranking' },
+    { id: 'number_one', name: 'এক নম্বর', desc: 'লিডারবোর্ডে ১ম স্থান অধিকার করুন', icon: '🌟', condition: (stats) => stats.rank === 1, category: 'ranking' },
+    
+    // Special Achievements
+    { id: 'explorer', name: 'অভিযাত্রী', desc: 'সব ধরনের গেম খেলুন', icon: '🗺️', condition: (stats) => stats.gamesPlayed && Object.keys(stats.gamesPlayed).length >= 4, category: 'special' },
+    { id: 'speed_demon', name: 'গতির দানব', desc: 'স্পিড চ্যালেঞ্জ সম্পন্ন করুন', icon: '🏃', condition: (stats) => stats.challengesCompleted && stats.challengesCompleted.speed > 0, category: 'special' },
+    { id: 'marathon_runner', name: 'ম্যারাথন দৌড়বিদ', desc: 'ম্যারাথন চ্যালেঞ্জ সম্পন্ন করুন', icon: '🏃‍♂️', condition: (stats) => stats.challengesCompleted && stats.challengesCompleted.marathon > 0, category: 'special' },
+    { id: 'daily_player', name: 'দৈনিক খেলোয়াড়', desc: '৭ দিন পরপর খেলুন', icon: '📅', condition: (stats) => stats.dailyStreak >= 7, category: 'special' },
+    { id: 'night_owl', name: 'রাতের পেঁচা', desc: 'রাত ১২টার পর খেলুন', icon: '🦉', condition: (stats) => stats.nightGames >= 1, category: 'special' },
+    { id: 'early_riser', name: 'ভোরের পাখি', desc: 'সকাল ৬টার আগে খেলুন', icon: '🌅', condition: (stats) => stats.morningGames >= 1, category: 'special' },
+    
+    // Score Milestones
+    { id: 'score_100', name: '১০০ পয়েন্ট', desc: 'মোট ১০০ পয়েন্ট অর্জন করুন', icon: '💰', condition: (stats) => stats.totalScore >= 100, category: 'milestone' },
+    { id: 'score_500', name: '৫০০ পয়েন্ট', desc: 'মোট ৫০০ পয়েন্ট অর্জন করুন', icon: '💎', condition: (stats) => stats.totalScore >= 500, category: 'milestone' },
+    { id: 'score_1000', name: '১০০০ পয়েন্ট', desc: 'মোট ১০০০ পয়েন্ট অর্জন করুন', icon: '🏆', condition: (stats) => stats.totalScore >= 1000, category: 'milestone' },
+    { id: 'score_2500', name: '২৫০০ পয়েন্ট', desc: 'মোট ২৫০০ পয়েন্ট অর্জন করুন', icon: '👑', condition: (stats) => stats.totalScore >= 2500, category: 'milestone' }
 ];
 
 async function showAchievements() {
@@ -84,6 +121,22 @@ async function showAchievements() {
     
     const userStats = await getUserStats();
     const unlockedAchievements = achievements.filter(a => a.condition(userStats));
+    
+    // Group achievements by category
+    const categories = {
+        beginner: { name: '🌱 শুরুর অর্জন', achievements: [] },
+        score: { name: '🎯 স্কোর অর্জন', achievements: [] },
+        progress: { name: '📈 অগ্রগতি অর্জন', achievements: [] },
+        consistency: { name: '🔥 ধারাবাহিকতা অর্জন', achievements: [] },
+        ranking: { name: '🏆 র‍্যাঙ্কিং অর্জন', achievements: [] },
+        special: { name: '⭐ বিশেষ অর্জন', achievements: [] },
+        milestone: { name: '💎 মাইলফলক অর্জন', achievements: [] }
+    };
+    
+    achievements.forEach(achievement => {
+        const unlocked = unlockedAchievements.includes(achievement);
+        categories[achievement.category].achievements.push({...achievement, unlocked});
+    });
     
     const popup = document.createElement('div');
     popup.id = 'achievement-popup';
@@ -96,22 +149,43 @@ async function showAchievements() {
                 </div>
                 <div class="popup-body">
                     <div class="achievement-summary">
-                        <p>${unlockedAchievements.length}/${achievements.length} অর্জন আনলক হয়েছে</p>
+                        <div class="summary-stats">
+                            <div class="stat-item">
+                                <span class="stat-number">${unlockedAchievements.length}</span>
+                                <span class="stat-label">আনলক</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-number">${achievements.length - unlockedAchievements.length}</span>
+                                <span class="stat-label">বাকি</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-number">${Math.round((unlockedAchievements.length / achievements.length) * 100)}%</span>
+                                <span class="stat-label">সম্পন্ন</span>
+                            </div>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: ${(unlockedAchievements.length / achievements.length) * 100}%"></div>
+                        </div>
                     </div>
-                    <div class="achievements-grid">
-                        ${achievements.map(achievement => {
-                            const unlocked = unlockedAchievements.includes(achievement);
-                            return `
-                                <div class="achievement-item ${unlocked ? 'unlocked' : 'locked'}">
-                                    <div class="achievement-icon">${achievement.icon}</div>
-                                    <div class="achievement-info">
-                                        <h4>${achievement.name}</h4>
-                                        <p>${achievement.desc}</p>
-                                    </div>
-                                    ${unlocked ? '<div class="unlock-badge">✓</div>' : '<div class="lock-badge">🔒</div>'}
+                    
+                    <div class="achievement-categories">
+                        ${Object.entries(categories).map(([key, category]) => `
+                            <div class="achievement-category">
+                                <h4 class="category-title">${category.name}</h4>
+                                <div class="achievements-grid">
+                                    ${category.achievements.map(achievement => `
+                                        <div class="achievement-item ${achievement.unlocked ? 'unlocked' : 'locked'}">
+                                            <div class="achievement-icon">${achievement.icon}</div>
+                                            <div class="achievement-info">
+                                                <h5>${achievement.name}</h5>
+                                                <p>${achievement.desc}</p>
+                                            </div>
+                                            ${achievement.unlocked ? '<div class="unlock-badge">✓</div>' : '<div class="lock-badge">🔒</div>'}
+                                        </div>
+                                    `).join('')}
                                 </div>
-                            `;
-                        }).join('')}
+                            </div>
+                        `).join('')}
                     </div>
                 </div>
             </div>
