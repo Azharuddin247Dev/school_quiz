@@ -374,7 +374,7 @@ function showLeaderboardPopup(title, scores) {
                 <div class="popup-body">
                     ${scores.length === 0 
                         ? '<p class="no-scores">এখনো কেউ খেলেনি!</p>'
-                        : scores.slice(0, 20).map((score, index) => `
+                        : scores.slice(0, 50).map((score, index) => `
                             <div class="score-item ${index === 0 ? 'top-score' : ''} ${score.userId === currentUser?.uid ? 'current-user' : ''}">
                                 <div class="score-rank">${index + 1}</div>
                                 <div class="score-info">
