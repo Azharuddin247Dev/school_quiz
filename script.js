@@ -1000,6 +1000,11 @@ const englishWords = [
 let currentEnglishWord = null;
 
 function startEnglishPuzzle() {
+  if (!isAuthenticated) {
+    showMessage('প্রথমে লগইন করুন!', 'error');
+    showAuthScreen();
+    return;
+  }
   hideAllScreens();
   document.getElementById("english-screen").style.display = "block";
   nextEnglishWord();
@@ -1041,6 +1046,11 @@ function exitEnglishPuzzle() {
 let currentMathsProblem = null;
 
 function startMathsPuzzle() {
+  if (!isAuthenticated) {
+    showMessage('প্রথমে লগইন করুন!', 'error');
+    showAuthScreen();
+    return;
+  }
   hideAllScreens();
   document.getElementById("maths-screen").style.display = "block";
   nextMathsProblem();
@@ -1094,6 +1104,11 @@ const elements = [
 let currentElement = null;
 
 function startChemistryQuiz() {
+  if (!isAuthenticated) {
+    showMessage('প্রথমে লগইন করুন!', 'error');
+    showAuthScreen();
+    return;
+  }
   hideAllScreens();
   document.getElementById("chemistry-screen").style.display = "block";
   nextChemistryElement();
@@ -1128,15 +1143,24 @@ function exitChemistryQuiz() {
 
 // Helper function
 function hideAllScreens() {
-  document.getElementById("auth-screen").style.display = "none";
-  document.getElementById("welcome-screen").style.display = "none";
-  document.getElementById("start-screen").style.display = "none";
-  document.getElementById("quiz-screen").style.display = "none";
-  document.getElementById("result-screen").style.display = "none";
-  document.getElementById("answer-screen").style.display = "none";
-  document.getElementById("english-screen").style.display = "none";
-  document.getElementById("maths-screen").style.display = "none";
-  document.getElementById("chemistry-screen").style.display = "none";
+  const screens = [
+    "auth-screen", "welcome-screen", "start-screen", "quiz-screen", 
+    "result-screen", "answer-screen", "english-screen", "maths-screen", 
+    "chemistry-screen", "practice-screen", "challenge-screen"
+  ];
+  
+  screens.forEach(screenId => {
+    const screen = document.getElementById(screenId);
+    if (screen) screen.style.display = "none";
+  });
+  
+  // Also remove any dynamically created screens
+  const dynamicScreens = document.querySelectorAll('.screen');
+  dynamicScreens.forEach(screen => {
+    if (screen.id === 'practice-screen' || screen.id === 'challenge-screen') {
+      screen.remove();
+    }
+  });
 }
 
 function showStartScreen() {
@@ -1147,11 +1171,8 @@ function showStartScreen() {
     return;
   }
 
-  document.getElementById("welcome-screen").style.display = "none";
+  hideAllScreens();
   document.getElementById("start-screen").style.display = "block";
-  document.getElementById("quiz-screen").style.display = "none";
-  document.getElementById("result-screen").style.display = "none";
-  document.getElementById("answer-screen").style.display = "none";
 
   // Set user name from authenticated user
   const nameInput = document.getElementById("student-name");
