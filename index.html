@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="bn">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>মাল্টি কুইজ অ্যাপ - Multi Quiz App</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="auth-styles.css">
+    <link rel="stylesheet" href="enhanced-styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+    
+    <!-- Firebase Config -->
+    <script src="firebase-config.js"></script>
+    
+    <!-- Auth Init Functions -->
+    <script src="auth-init.js"></script>
+    
+    <!-- Google tag (gtag.js) -->
+<!-- <script async src="https://www.googletagmanager.com/gtag/js?id=G-B1CTFLXE3J"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-B1CTFLXE3J');
+</script> -->
+</head>
+
+<body>
+    <div class="floating-shapes">
+        <div class="shape shape-1"></div>
+        <div class="shape shape-2"></div>
+        <div class="shape shape-3"></div>
+        <div class="shape shape-4"></div>
+        <div class="shape shape-5"></div>
+    </div>
+    <div class="particles" id="particles"></div>
+    <div class="app-container">
+        <header class="app-header">
+            <div class="header-content">
+                <div class="logo-section">
+                    <div class="logo-icon">🎓</div>
+                    <div class="logo-text">
+                        <h1>মাল্টি কুইজ অ্যাপ</h1>
+                        <p>বিভিন্ন বিষয়ে জ্ঞান পরীক্ষা করুন</p>
+                    </div>
+                </div>
+                <div class="header-right">
+                    <div class="top-row">
+                        <div class="creator-badge">
+                            <div class="creator-icon"><img src="me.jpg" alt="Azharuddin Sir"
+                                    onerror="this.outerHTML='<span>👨🏫</span>'"></div>
+                            <div class="creator-info">
+                                <span class="creator-label">Created by</span>
+                                <span class="creator-name">Azharuddin Sir</span>
+                            </div>
+                        </div>
+                        <div id="user-info" class="user-info"></div>
+                        <button class="leaderboard-btn">
+                            <span class="leaderboard-icon">🏆</span>
+                            <span class="leaderboard-text">লিডারবোর্ড</span>
+                        </button>
+                        <button class="profile-btn">
+                            <span class="profile-icon">👤</span>
+                            <span class="profile-text">প্রোফাইল</span>
+                        </button>
+                        <button class="achievement-btn">
+                            <span class="achievement-icon">🏅</span>
+                            <span class="achievement-text">অর্জন</span>
+                        </button>
+                        <button class="online-users-btn">
+                            <span class="online-icon">🟢</span>
+                            <span class="online-text">অনলাইন</span>
+                        </button>
+                        <div id="auth-button" class="auth-button">
+                            <span>লগইন</span>
+                        </div>
+                        <div class="notification-board">
+                            <button class="update-btn">
+                                <span class="update-icon">🔔</span>
+                                <span class="update-text">আপডেট</span>
+                                <span class="update-badge">নতুন</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="header-stats">
+                        <div class="stat-item">
+                            <span class="stat-number">৪</span>
+                            <span class="stat-label">গেম টাইপ</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-number">২০০+</span>
+                            <span class="stat-label">প্রশ্ন</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-number">৩</span>
+                            <span class="stat-label">ভাষা</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Navigation Bar -->
+        <nav class="navbar">
+            <div class="nav-container">
+                <div class="nav-item" data-action="startEnglishPuzzle">
+                    <span class="nav-icon">🧩</span>
+                    <span class="nav-text">English Puzzle</span>
+                </div>
+                <div class="nav-item" data-action="startMathsPuzzle">
+                    <span class="nav-icon">🔢</span>
+                    <span class="nav-text">Maths Puzzle</span>
+                </div>
+                <div class="nav-item" data-action="startChemistryQuiz">
+                    <span class="nav-icon">⚗️</span>
+                    <span class="nav-text">Chemistry</span>
+                </div>
+                <div class="nav-item" data-action="showStartScreen">
+                    <span class="nav-icon">📚</span>
+                    <span class="nav-text">Main Quiz</span>
+                </div>
+                <div class="nav-item" data-action="showPracticeMode">
+                    <span class="nav-icon">🎯</span>
+                    <span class="nav-text">Practice</span>
+                </div>
+                <div class="nav-item" data-action="showChallengeMode">
+                    <span class="nav-icon">⚡</span>
+                    <span class="nav-text">Challenge</span>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Top Scrolling Message -->
+        <div class="scrolling-message top-message">
+            <div id="dynamic-message" class="message-text">
+                এই অ্যাপটি ভবিষ্যতে আরও উন্নত ও পরিবর্তিত হবে, তাই প্রতিদিন ভিজিট করুন
+            </div>
+        </div>
+
+        <main class="main-content">
+            <!-- Authentication Screen -->
+            <div id="auth-screen" class="screen" style="display: none;">
+                <div class="auth-section">
+                    <h2 id="auth-title">লগইন করুন</h2>
+                    <p>কুইজ খেলতে এবং গ্লোবাল লিডারবোর্ডে অংশ নিতে লগইন করুন</p>
+                    
+                    <!-- Login Form -->
+                    <div id="login-form" class="auth-form">
+                        <div class="form-group">
+                            <label for="login-email">ইমেইল:</label>
+                            <input type="email" id="login-email" placeholder="আপনার ইমেইল" class="form-input">
+                        </div>
+                        <div class="form-group">
+                            <label for="login-password">পাসওয়ার্ড:</label>
+                            <input type="password" id="login-password" placeholder="পাসওয়ার্ড" class="form-input">
+                        </div>
+                        <button onclick="signIn()" class="btn btn-primary pulse-btn">
+                            <span>লগইন করুন</span>
+                        </button>
+                        <p class="auth-switch">নতুন ব্যবহারকারী? <a href="#" onclick="showSignupForm()">অ্যাকাউন্ট তৈরি করুন</a></p>
+                    </div>
+                    
+                    <!-- Signup Form -->
+                    <div id="signup-form" class="auth-form" style="display: none;">
+                        <div class="form-group">
+                            <label for="signup-name">নাম:</label>
+                            <input type="text" id="signup-name" placeholder="আপনার নাম" class="form-input">
+                        </div>
+                        <div class="form-group">
+                            <label for="signup-email">ইমেইল:</label>
+                            <input type="email" id="signup-email" placeholder="আপনার ইমেইল" class="form-input">
+                        </div>
+                        <div class="form-group">
+                            <label for="signup-password">পাসওয়ার্ড:</label>
+                            <input type="password" id="signup-password" placeholder="পাসওয়ার্ড (কমপক্ষে ৬ অক্ষর)" class="form-input">
+                        </div>
+                        <button onclick="signUp()" class="btn btn-primary pulse-btn">
+                            <span>অ্যাকাউন্ট তৈরি করুন</span>
+                        </button>
+                        <p class="auth-switch">ইতিমধ্যে অ্যাকাউন্ট আছে? <a href="#" onclick="showLoginForm()">লগইন করুন</a></p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Welcome Screen -->
+            <div id="welcome-screen" class="screen">
+                <div class="welcome-section">
+                    <h2>🎓 মাল্টি কুইজ অ্যাপে স্বাগতম!</h2>
+                    <p>উপরের নেভিগেশন বার থেকে আপনার পছন্দের গেম বেছে নিন</p>
+                    <div class="instruction-box">
+                        <h3>🎯 কিভাবে খেলবেন?</h3>
+                        <ul>
+                            <li>📚 <strong>মেইন কুইজ:</strong> বাংলা প্রশ্নোত্তর</li>
+                            <li>🧩 <strong>ইংরেজি পাজল:</strong> শব্দ সম্পূর্ণ করুন</li>
+                            <li>🔢 <strong>গণিত পাজল:</strong> গুণের অঙ্ক</li>
+                            <li>⚗️ <strong>রসায়ন:</strong> মৌলের প্রতীক</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Start Screen -->
+            <div id="start-screen" class="screen" style="display: none;">
+                <div class="welcome-section">
+                    <h2>স্বাগতম!</h2>
+                    <p>আপনার জ্ঞান পরীক্ষা করুন বিভিন্ন বিষয়ের প্রশ্নের মাধ্যমে</p>
+                </div>
+
+                <div class="setup-form">
+                    <div class="form-group animated-input">
+                        <label for="student-name">আপনার নাম:</label>
+                        <input type="text" id="student-name" placeholder="নাম লিখুন" class="form-input">
+                        <div class="input-glow"></div>
+                    </div>
+
+                    <div class="quiz-info-box">
+                        <h3>📚 কুইজ তথ্য</h3>
+                        <p><strong>প্রতি সেটে ২০টি প্রশ্ন</strong></p>
+                        <p>মোট ১১টি সেট উপলব্ধ</p>
+                        <p>সব প্রশ্ন শেষ হলে আবার শুরু থেকে</p>
+                    </div>
+
+                    <div id="set-selector" class="set-selector" style="display: none;">
+                        <h4>সম্পন্ন সেট থেকে বেছে নিন:</h4>
+                        <select id="completed-sets" class="form-select">
+                            <option value="">একটি সেট বেছে নিন</option>
+                        </select>
+                        <button onclick="startSelectedSet()" class="btn btn-success hover-lift">
+                            <span>নির্বাচিত সেট খেলুন</span>
+                        </button>
+                    </div>
+
+                    <button onclick="startQuiz()" class="btn btn-primary pulse-btn">
+                        <span class="btn-text">কুইজ শুরু করুন</span>
+                        <div class="btn-ripple"></div>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Quiz Screen -->
+            <div id="quiz-screen" class="screen" style="display: none;">
+                <div class="quiz-header">
+                    <div class="set-indicator">
+                        <div class="set-badge">
+                            <span class="set-icon">📚</span>
+                            <span id="current-set" class="set-text">সেট ১</span>
+                        </div>
+                    </div>
+                    <div class="progress-section">
+                        <div class="progress-bar">
+                            <div id="progress-fill" class="progress-fill"></div>
+                        </div>
+                        <span id="question-counter" class="question-counter">১ / ১০</span>
+                    </div>
+
+                </div>
+
+                <div class="timer-section">
+                    <div id="timer-container" class="timer-container">
+                        <div id="timer-bar" class="timer-bar"></div>
+                        <span id="timer-text" class="timer-text">৩০</span>
+                    </div>
+                </div>
+
+                <div class="question-section">
+                    <h2 id="question" class="question-text"></h2>
+                    <div id="options" class="options-grid"></div>
+                </div>
+
+                <div class="quiz-actions">
+                    <button onclick="skipQuestion()" class="btn btn-secondary hover-lift">
+                        <span>এড়িয়ে যাও</span>
+                    </button>
+                    <button onclick="quitQuiz()" class="btn btn-danger hover-lift">
+                        <span>বন্ধ করুন</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Result Screen -->
+            <div id="result-screen" class="screen" style="display: none;">
+                <div class="results-section">
+                    <h2 class="results-title">🎉 কুইজ সম্পন্ন!</h2>
+
+                    <div class="score-display">
+                        <div id="score-circle" class="score-circle">
+                            <span id="score-percentage">০%</span>
+                        </div>
+                        <p id="student-info" class="student-info"></p>
+                        <p id="score-details" class="score-details"></p>
+                    </div>
+
+                    <div id="performance-badge" class="performance-badge"></div>
+
+                    <div id="subject-breakdown" class="subject-breakdown"></div>
+
+                    <div class="result-actions">
+                        <button onclick="restartQuiz()" class="btn btn-primary hover-lift pulse-btn">
+                            <span>আবার খেলুন</span>
+                        </button>
+                        <button onclick="showAnswers()" class="btn btn-secondary hover-lift">
+                            <span>উত্তর দেখুন</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Answer Review Screen -->
+            <div id="answer-screen" class="screen" style="display: none;">
+                <div class="answer-review">
+                    <h2>প্রশ্ন ও উত্তর পর্যালোচনা</h2>
+                    <div id="answer-list" class="answer-list"></div>
+                    <button onclick="backToResults()" class="btn btn-primary">ফলাফলে ফিরে যান</button>
+                </div>
+            </div>
+
+            <!-- English Puzzle Screen -->
+            <div id="english-screen" class="screen" style="display: none;">
+                <div class="puzzle-section">
+                    <h2>🧩 English Puzzle</h2>
+                    <div id="english-content">
+                        <div class="clue-box">
+                            <p><strong>Clue:</strong> <span id="english-clue"></span></p>
+                        </div>
+                        <div class="word-display">
+                            <h3 id="english-word"></h3>
+                        </div>
+                        <div class="input-section">
+                            <input type="text" id="english-answer" placeholder="Enter complete word" class="form-input">
+                            <div class="puzzle-actions">
+                                <button onclick="checkEnglishAnswer()" class="btn btn-primary">Submit</button>
+                                <button onclick="nextEnglishWord()" class="btn btn-secondary">Next Word</button>
+                                <button onclick="exitEnglishPuzzle()" class="btn btn-danger">Exit</button>
+                            </div>
+                        </div>
+                        <div id="english-result" class="result-message"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Maths Puzzle Screen -->
+            <div id="maths-screen" class="screen" style="display: none;">
+                <div class="puzzle-section">
+                    <h2>🔢 Maths Puzzle</h2>
+                    <div id="maths-content">
+                        <div class="problem-display">
+                            <h3 id="maths-problem"></h3>
+                        </div>
+                        <div class="input-section">
+                            <input type="number" id="maths-answer" placeholder="Enter answer" class="form-input">
+                            <div class="puzzle-actions">
+                                <button onclick="checkMathsAnswer()" class="btn btn-primary">Submit</button>
+                                <button onclick="nextMathsProblem()" class="btn btn-secondary">Next Problem</button>
+                                <button onclick="exitMathsPuzzle()" class="btn btn-danger">Exit</button>
+                            </div>
+                        </div>
+                        <div id="maths-result" class="result-message"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Chemistry Quiz Screen -->
+            <div id="chemistry-screen" class="screen" style="display: none;">
+                <div class="puzzle-section">
+                    <h2>⚗️ Chemistry Quiz</h2>
+                    <div id="chemistry-content">
+                        <div class="element-display">
+                            <h3>What is the chemical symbol for:</h3>
+                            <h2 id="chemistry-element"></h2>
+                            <p class="case-note">⚠️ Case sensitive! (e.g., Ag not ag)</p>
+                        </div>
+                        <div class="input-section">
+                            <input type="text" id="chemistry-answer" placeholder="Enter symbol" class="form-input">
+                            <div class="puzzle-actions">
+                                <button onclick="checkChemistryAnswer()" class="btn btn-primary">Submit</button>
+                                <button onclick="nextChemistryElement()" class="btn btn-secondary">Next Element</button>
+                                <button onclick="exitChemistryQuiz()" class="btn btn-danger">Exit</button>
+                            </div>
+                        </div>
+                        <div id="chemistry-result" class="result-message"></div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Scrolling Message -->
+        <div class="scrolling-message">
+            <div class="message-text">
+                আপনি সর্বোচ্চ স্কোরারের বিবরণও দেখতে পারেন :নীচে প্রদত্ত আজহারউদ্দিন নামের ওপর ডাবল ক্লিক করুন
+            </div>
+        </div>
+
+        <footer class="app-footer">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>📚 শিক্ষামূলক</h3>
+                    <p>পশ্চিমবঙ্গ সরকারি স্কুলের পাঠ্যক্রম অনুযায়ী প্রস্তুতকৃত</p>
+                </div>
+                <div class="footer-section">
+                    <h3>🎯মেইন কুইজ: বিষয়সমূহ</h3>
+                    <p>ইতিহাস • ভূগোল • ভৌতবিজ্ঞান • জীবনবিজ্ঞান • ইংরেজি • বাংলা</p>
+                </div>
+                <div class="footer-section">
+                    <h3>🏆 লক্ষ্য</h3>
+                    <p>শিক্ষার্থীদের জ্ঞান বৃদ্ধি ও মূল্যায়ন</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <div class="footer-creator">
+                    <span class="creator-heart">❤️</span>
+                    <span>Crafted with passion by</span>
+                    <span class="footer-creator-name">Azharuddin Sir</span>
+                </div>
+                <p>&copy; ২০২৫ মাল্টি কুইজ অ্যাপ। সর্বস্বত্ব সংরক্ষিত।</p>
+            </div>
+        </footer>
+    </div> 
+
+
+    <script src="questions.js"></script>
+    <script src="updates.js"></script>
+    <script src="messages.js"></script>
+    <script src="firebase-auth.js"></script>
+    <script src="enhanced-features.js"></script>
+    <script src="script.js"></script>
+
+
+</body>
+
+</html>
